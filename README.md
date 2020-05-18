@@ -23,7 +23,7 @@ With this package:
 	func main() {
 		....
 		shader := shaders.NewPrimitiveShader()
-		shader.VertexShaderID := gl.CreateShader(gl.VERTEX_SHADER)
+		shader.VertexShaderID = gl.CreateShader(gl.VERTEX_SHADER)
 		gl.ShaderSource(shader.VertexShaderID, 1, shader.VertexShader, nil)
 		....
 	}
