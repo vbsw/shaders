@@ -24,12 +24,16 @@ type Shader struct {
 	ProgramID          uint32
 	PositionAttribute  *uint8
 	ColorAttribute     *uint8
+	CoordsAttribute    *uint8
 	ProjectionUniform  *uint8
 	ModelUniform       *uint8
+	TextureUniform     *uint8
 	PositionLocation   int32
 	ColorLocation      int32
+	CoordsLocation     int32
 	ProjectionLocation int32
 	ModelLocation      int32
+	TextureLocation    int32
 }
 
 // VertexShaderStr returns vertex shader as string.
@@ -44,7 +48,7 @@ func (shader *Shader) FragmentShaderStr() string {
 
 // NewPrimitiveShader returns an instance of Shader for primitive types.
 //
-// VertexShader contains the following program:
+// Vertex shader:
 //
 //	#version 130
 //
@@ -60,7 +64,7 @@ func (shader *Shader) FragmentShaderStr() string {
 //		fragementColor = colorIn;
 //	}
 //
-// FragmentShader contains the following program:
+// Fragment shader:
 //
 //	#version 130
 //
@@ -72,19 +76,61 @@ func (shader *Shader) FragmentShaderStr() string {
 //	}
 func NewPrimitiveShader() *Shader {
 	shader := new(Shader)
-	shader.VertexShader = (**uint8)(unsafe.Pointer(&C.primitive_vertex_shader))
-	shader.FragmentShader = (**uint8)(unsafe.Pointer(&C.primitive_fragment_shader))
-	shader.PositionAttribute = (*uint8)(unsafe.Pointer(C.primitive_position_attribute))
-	shader.ColorAttribute = (*uint8)(unsafe.Pointer(C.primitive_color_attribute))
-	shader.ProjectionUniform = (*uint8)(unsafe.Pointer(C.primitive_projection_uniform))
-	shader.ModelUniform = (*uint8)(unsafe.Pointer(C.primitive_model_uniform))
+	shader.VertexShader = (**uint8)(unsafe.Pointer(&C.vbsw_primitive_vertex_shader))
+	shader.FragmentShader = (**uint8)(unsafe.Pointer(&C.vbsw_primitive_fragment_shader))
+	shader.PositionAttribute = (*uint8)(unsafe.Pointer(C.vbsw_primitive_position_attribute))
+	shader.ColorAttribute = (*uint8)(unsafe.Pointer(C.vbsw_primitive_color_attribute))
+	shader.ProjectionUniform = (*uint8)(unsafe.Pointer(C.vbsw_primitive_projection_uniform))
+	shader.ModelUniform = (*uint8)(unsafe.Pointer(C.vbsw_primitive_model_uniform))
+	return shader
+}
+
+// NewTextureShader returns an instance of Shader for textures.
+//
+// Vertex shader:
+//
+//	#version 130
+//
+//	in vec3 positionIn;
+//	in vec2 textureCoordsIn;
+//	out vec2 fragmentTextureCoords;
+//
+//	uniform mat4 projection = mat4(1.0);
+//	uniform mat4 model = mat4(1.0);
+//
+//	void main() {
+//		gl_Position = projection * model * vec4(positionIn, 1.0f);
+//		fragmentTextureCoords = textureCoordsIn;
+//	}
+//
+// Fragment shader:
+//
+//	#version 130
+//
+//	in vec2 fragmentTextureCoords;
+//	out vec4 color;
+//
+//	uniform sampler2D imageTexture;
+//
+//	void main () {
+//		color = texture(imageTexture, fragmentTextureCoords);
+//	}
+func NewTextureShader() *Shader {
+	shader := new(Shader)
+	shader.VertexShader = (**uint8)(unsafe.Pointer(&C.vbsw_texture_vertex_shader))
+	shader.FragmentShader = (**uint8)(unsafe.Pointer(&C.vbsw_texture_fragment_shader))
+	shader.PositionAttribute = (*uint8)(unsafe.Pointer(C.vbsw_texture_position_attribute))
+	shader.CoordsAttribute = (*uint8)(unsafe.Pointer(C.vbsw_texture_coords_attribute))
+	shader.ProjectionUniform = (*uint8)(unsafe.Pointer(C.vbsw_texture_projection_uniform))
+	shader.ModelUniform = (*uint8)(unsafe.Pointer(C.vbsw_texture_model_uniform))
+	shader.TextureUniform = (*uint8)(unsafe.Pointer(C.vbsw_texture_texture_uniform))
 	return shader
 }
 
 // NewString converts c-string to string and returns it. Data of c-string is not reallocated,
 // but used in string.
 func NewString(cstr *uint8) string {
-	ccstr := C.constchar_t(unsafe.Pointer(cstr))
+	ccstr := C.vbsw_constchar_t(unsafe.Pointer(cstr))
 	n := int(C.strlen(ccstr))
 	dataSlice := *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(ccstr)),
