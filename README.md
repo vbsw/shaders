@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/vbsw/shaders?status.svg)](https://godoc.org/github.com/vbsw/shaders) [![Go Report Card](https://goreportcard.com/badge/github.com/vbsw/shaders)](https://goreportcard.com/report/github.com/vbsw/shaders) [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
 ## About
-This package contains plain vertex and fragement shaders, version 1.30 (OpenGL 3.0), for Go. It is published on <https://github.com/vbsw/shaders>.
+This package contains plain vertex and fragement shaders, version 1.30 (OpenGL 3.0), for Go. It is published on <https://github.com/vbsw/shaders> and <https://gitlab.com/vbsw/shaders>.
 
 ## Copyright
 Copyright 2020, Vitali Baumtrok (vbsw@mailbox.org).
