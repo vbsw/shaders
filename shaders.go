@@ -5,6 +5,7 @@
  *        http://www.boost.org/LICENSE_1_0.txt)
  */
 
+// Package shaders contains plain vertex and fragment shaders, version 1.30 (OpenGL 3.0).
 package shaders
 
 // #include <string.h>
